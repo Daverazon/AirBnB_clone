@@ -6,5 +6,5 @@
 * Examples
 
 # AUTHORS
-Oluwatosin Sasona <>
+Oluwatosin Sasona <sasonachristianah@gmail.com>
 Onwugbenu Kamsiriochi <kamsidavid2@gmail.com>
