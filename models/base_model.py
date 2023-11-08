@@ -33,12 +33,12 @@ class BaseModel:
         """return a dictionary containing all keys/values of __dict__
         of the instance
         """
-        json_representation = self.__dict__
+        dict_representation = self.__dict__
         # create dictionary containing all instance attributes
-        json_representation['__class__'] = self.__class__.__name__
+        dict_representation['__class__'] = self.__class__.__name__
         # add class name to dictionary
         self.created_at = datetime.isoformat(self.created_at)
         # convert to string object in isoformat
         self.updated_at = datetime.isoformat(self.updated_at)
         # convert to string object in isoformat
-        return json_representation
+        return dict_representation
