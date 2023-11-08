@@ -7,16 +7,34 @@ from datetime import datetime
 class BaseModel:
     """This class defines all common attributes/methods for other classes
     """
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """Initialise a BaseModel object
         """
-        self.id = str(uuid.uuid4())
-        # generate unique id for each instance
-        self.created_at = datetime.now()
-        # assign with the current datetime when an instance is created
-        self.updated_at = self.created_at
-        # assign with the current datetime when an instance is created and
-        # it will be updated every time you change your object
+        if kwargs:
+            # if we have a non-empty dict_representation of an
+            # object, re-create that instance
+            for key in kwargs.keys():
+                if key == '__class__':
+                    # don't add __class__ as attribute
+                    continue
+                if key == 'created_at':
+                    self.created_at = datetime.fromisoformat(kwargs[key])
+                    # convert isoformat string object to datetime object
+                    continue
+                if key == 'updated_at':
+                    self.updated_at = datetime.fromisoformat(kwargs[key])
+                    # convert isoformat string object to datetime object
+                    continue
+                setattr(self, key, kwargs[key])
+                # use the keys as instance attribute names to store the values
+        else:
+            self.id = str(uuid.uuid4())
+            # generate unique id for each instance
+            self.created_at = datetime.now()
+            # assign with the current datetime when an instance is created
+            self.updated_at = self.created_at
+            # assign with the current datetime when an instance is created and
+            # it will be updated every time you change your object
 
     def __str__(self):
         """Return informal representation of object
