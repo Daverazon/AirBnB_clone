@@ -2,6 +2,7 @@
 """This module defines a BaseModel class"""
 import uuid
 from datetime import datetime
+from __init__ import storage
 
 
 class BaseModel:
@@ -28,6 +29,7 @@ class BaseModel:
                 setattr(self, key, kwargs[key])
                 # use the keys as instance attribute names to store the values
         else:
+            # if it's a new instance
             self.id = str(uuid.uuid4())
             # generate unique id for each instance
             self.created_at = datetime.now()
@@ -35,6 +37,7 @@ class BaseModel:
             self.updated_at = self.created_at
             # assign with the current datetime when an instance is created and
             # it will be updated every time you change your object
+            storage.save()
 
     def __str__(self):
         """Return informal representation of object
@@ -46,6 +49,7 @@ class BaseModel:
         with the current datetime
         """
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """return a dictionary containing all keys/values of __dict__
