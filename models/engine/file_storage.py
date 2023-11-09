@@ -6,7 +6,7 @@ class FileStorage:
     """serializes instances to a JSON file and deserializes JSON
     file to instances
     """
-    __file_path
+    __file_path = None
     # path to JSON file
     __objects = {}
     # will store all objects by <class_name>.id
