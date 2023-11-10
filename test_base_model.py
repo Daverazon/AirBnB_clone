@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from models.base_model import BaseModel
+from models.base_model import BaseModel  # use absolute import
 
 my_model = BaseModel()
 my_model.name = "My First Model"

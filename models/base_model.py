@@ -2,7 +2,8 @@
 """This module defines a BaseModel class"""
 import uuid
 from datetime import datetime
-from . import storage
+
+from . import storage  # use relative import
 
 
 class BaseModel:
