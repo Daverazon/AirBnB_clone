@@ -17,11 +17,12 @@ class HBNBCommand(cmd.Cmd):
                 if cls == "":
                         print("** class name missing **")
                 try:
-                        obj = eval(cls)()
-                        # create new instance and add it to FileStorage.__objects
+                        eval(cls) # check if the class object exists
                 except NameError:
                         print("** class doesn't exist **")
                 else:
+                        obj = eval(cls)()
+                        # create new instance and add it to FileStorage.__objects
                         storage.save()
                         '''serialize the updated FileStorage.__objects
                         dictionary and save to the json file'''
@@ -32,10 +33,23 @@ class HBNBCommand(cmd.Cmd):
                 print("Creates a new instance of BaseModel,",
                       "saves it (to the JSON file) and prints the id\n")
 
-        def do_show(self, clss):
+        def do_show(self, args):
                 """Prints the string representation of an instance based
                   on the class name and id"""
-                
+                args = args.split()  # [<class_name>, <id>]
+                if len(args) == 0:
+                        print("** class name missing **")
+                try:
+                        cls = args[0]
+                        eval(cls)  # check if the class object exists
+                except NameError:
+                        print("** class doesn't exist **")
+                if len(args) == 1:
+                        print("** instance id missing **")
+                else:
+                        cls, id = args  # unpack list
+                        
+
 
         def help_show(self):
                 """Help text for show command"""
