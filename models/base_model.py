@@ -38,7 +38,11 @@ class BaseModel:
             self.updated_at = self.created_at
             # assign with the current datetime when an instance is created and
             # it will be updated every time you change your object
-            storage.save()
+            storage.new(self)
+            """add the new object as an item in the dictionary
+            FileStorage.__objects like this:
+            * key will be BaseModel.id
+            * value will be dict_representation of self"""
 
     def __str__(self):
         """Return informal representation of object
@@ -51,17 +55,20 @@ class BaseModel:
         """
         self.updated_at = datetime.now()
         storage.save()
+        # store the object in the json file
 
     def to_dict(self):
         """return a dictionary containing all keys/values of __dict__
         of the instance
         """
-        dict_representation = self.__dict__
+        dict_representation = self.__dict__.copy()
         # create dictionary containing all instance attributes
         dict_representation['__class__'] = self.__class__.__name__
         # add class name to dictionary
-        self.created_at = datetime.isoformat(self.created_at)
+        dict_representation['created_at'] =\
+            dict_representation['created_at'].isoformat()
         # convert to string object in isoformat
-        self.updated_at = datetime.isoformat(self.updated_at)
+        dict_representation['updated_at'] =\
+            dict_representation['updated_at'].isoformat()
         # convert to string object in isoformat
         return dict_representation

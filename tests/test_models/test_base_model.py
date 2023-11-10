@@ -176,6 +176,7 @@ class TestBaseModel_to_dict(unittest.TestCase):
             'updated_at': dt.isoformat()
         }
         self.assertDictEqual(bm.to_dict(), tdict)
+        # This test contradicts that on line 183
 
     def test_contrast_to_dict_dunder_dict(self):
         bm = BaseModel()
