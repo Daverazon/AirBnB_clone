@@ -3,7 +3,7 @@
 import uuid
 from datetime import datetime
 
-from . import storage  # use relative import
+import  models
 
 
 class BaseModel:
@@ -34,7 +34,7 @@ class BaseModel:
             self.updated_at = self.created_at
             # assign with the current datetime when an instance is created and
             # it will be updated every time you change your object
-            storage.new(self)
+            models.storage.new(self)
             """add the new object as an item in the dictionary
             FileStorage.__objects like this:
             * key will be BaseModel.id
@@ -50,7 +50,7 @@ class BaseModel:
         with the current datetime
         """
         self.updated_at = datetime.now()
-        storage.save()
+        models.storage.save()
         # store the object in the json file
 
     def to_dict(self):
