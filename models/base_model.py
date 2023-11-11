@@ -13,23 +13,21 @@ class BaseModel:
         """Initialise a BaseModel object
         """
         if kwargs:
+            print("--------RECREATION---------")
             # if we have a non-empty dict_representation of an
             # object, re-create that instance
             for key in kwargs.keys():
                 if key == '__class__':
                     # don't add __class__ as attribute
                     continue
-                if key == 'created_at':
-                    self.created_at = datetime.fromisoformat(kwargs[key])
-                    # convert isoformat string object to datetime object
-                    continue
-                if key == 'updated_at':
-                    self.updated_at = datetime.fromisoformat(kwargs[key])
+                if key in ('created_at', 'updated_at'):
+                    setattr(self, key, datetime.fromisoformat(kwargs[key]))
                     # convert isoformat string object to datetime object
                     continue
                 setattr(self, key, kwargs[key])
                 # use the keys as instance attribute names to store the values
         else:
+            print("--------NEW---------")
             # if it's a new instance
             self.id = str(uuid.uuid4())
             # generate unique id for each instance
