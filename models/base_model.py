@@ -13,7 +13,6 @@ class BaseModel:
         """Initialise a BaseModel object
         """
         if kwargs:
-            print("--------RECREATION---------")
             # if we have a non-empty dict_representation of an
             # object, re-create that instance
             for key in kwargs.keys():
@@ -27,7 +26,6 @@ class BaseModel:
                 setattr(self, key, kwargs[key])
                 # use the keys as instance attribute names to store the values
         else:
-            print("--------NEW---------")
             # if it's a new instance
             self.id = str(uuid.uuid4())
             # generate unique id for each instance

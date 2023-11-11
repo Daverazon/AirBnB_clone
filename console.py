@@ -131,18 +131,20 @@ class HBNBCommand(cmd.Cmd):
                         # ["<class_name>", "<id>", "<attribute_name>"...]
                         print("** value missing **")
                         return
-                try:
-                        value = eval(args[3])
-                except (NameError, SyntaxError):
-                        """ strings that are not scientific notation
-                        if they start with anything other than a letter
-                        or underscore will raise Syntax Error while other
-                        strings that don't eval to an object will raise
-                        NameError"""
-                        pass
-                if not isinstance(args[3], (int, float)):
-                        # leave it as a string
-                        value = args[3]
+                value = args[3]
+
+                if value.startswith('"') and value.endswith('"'):
+                        value = value[1:-1]
+                if value.startswith("'") and value.endswith('"'):
+                        value = value[1:-1]
+                # remove quotes from value but value still a string ooo
+                if value.isdigit():
+                        value = int(value)
+                else:
+                        try:
+                                value = float(args[3])
+                        except ValueError:
+                                pass
                 return (args[2], value)
 
         def do_update(self, args):
