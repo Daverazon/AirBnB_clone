@@ -20,7 +20,7 @@ class HBNBCommand(cmd.Cmd):
                 # ["<class_name>"]
                 try:
                         cls = eval(arg[0]) # check if the class object exists
-                except NameError:
+                except (NameError, SyntaxError):
                         print("** class doesn't exist **")
                         return
                 return cls
@@ -30,11 +30,12 @@ class HBNBCommand(cmd.Cmd):
                 saves it (to the JSON file) and prints the id"""
                 if self.checkClass(arg) == None:
                         return
-                self.checkClass(arg)()
-                 # create new instance and add it to FileStorage.__objects
+                obj = self.checkClass(arg)()
+                # create new instance and add it to FileStorage.__objects
                 storage.save()
                 '''serialize the updated FileStorage.__objects
                 dictionary and save to the json file'''
+                print(obj.id)
 
         def help_create(self):
                 """Help text for create command"""
@@ -60,7 +61,7 @@ class HBNBCommand(cmd.Cmd):
 
         def do_show(self, args):
                 """Prints the string representation of an instance based
-                  on the class name and id""" # [<class_name>, <id>]
+                  on the class name and id"""
                 if self.checkClass(args) == None:
                         return
                 cls = self.checkClass(args)
@@ -77,10 +78,18 @@ class HBNBCommand(cmd.Cmd):
                 print("Prints the string representation of an",
                       " instance based on the class name and id\n")
         
-        def do_destroy(self, ):
+        def do_destroy(self, args):
                 """Deletes an instance based on the class name
                 and id (save the change into the JSON file)"""
-
+                if self.checkClass(args) == None:
+                        return
+                cls = self.checkClass(args)
+                if self.checkId(cls, args) == None:
+                        return
+                key = self.checkId(cls, args)[1]
+                objects = storage.all()
+                objects.pop(key)
+                storage.save()
 
         def help_destroy(self):
                 """Help text for destroy command"""
@@ -102,11 +111,9 @@ class HBNBCommand(cmd.Cmd):
                 str_rep = []
                 for key, dict_rep in objects.items():
                         cls = key.split(sep='.')[0]  # ['<class_name>', '<id>']
-                        obj = eval(cls)(dict_rep)  # recreate object
-                        str_rep.append(obj.__str__)  # add string rep to list
+                        obj = eval(cls)(**dict_rep)  # recreate object
+                        str_rep.append(str(obj))  # add string rep to list
                 print(str_rep)
-
-                
 
         def help_all(self):
                 """Help text for all command"""
@@ -114,9 +121,49 @@ class HBNBCommand(cmd.Cmd):
                 print(" Prints all string representation of all",
                       " instances based or not on the class name\n")
 
-        def do_update(self, ):
+        def checkAttr(self, args):
+                """Error check attribute name and value"""
+                args = args.split()
+                if len(args) == 2:  # ["<class_name>", "<id>", ...]
+                        print("** attribute name missing **")
+                        return
+                if len(args) == 3:
+                        # ["<class_name>", "<id>", "<attribute_name>"...]
+                        print("** value missing **")
+                        return
+                try:
+                        value = eval(args[3])
+                except (NameError, SyntaxError):
+                        """ strings that are not scientific notation
+                        if they start with anything other than a letter
+                        or underscore will raise Syntax Error while other
+                        strings that don't eval to an object will raise
+                        NameError"""
+                        pass
+                if not isinstance(args[3], (int, float)):
+                        # leave it as a string
+                        value = args[3]
+                return (args[2], value)
+
+        def do_update(self, args):
                 """Updates an instance based on the class name and id by adding
                   or updating attribute (save the change into the JSON file)"""
+                if self.checkClass(args) == None:
+                        return
+                cls = self.checkClass(args)
+                if self.checkId(cls, args) == None:
+                        return
+                key = self.checkId(cls, args)[1]
+                if self.checkAttr(args) == None:
+                        return
+                name, value = self.checkAttr(args)
+                dict_rep = storage.all()[key]
+                obj = cls(**dict_rep)  # recreate the object
+                print(name, value)
+                setattr(obj, name, value)
+                obj.save()  # update updated_at
+                storage.new(obj)  # add update object to FileStorage.__objects
+                storage.save()  # save objects to file.json
 
         def help_update(self):
                 """Help text for update command"""
