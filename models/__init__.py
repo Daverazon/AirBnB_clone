@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-from .engine.file_storage import FileStorage  # use relative import
+"""This pacakge contains the classes for the Airbnb project"""
+from models.engine.file_storage import FileStorage  # use relative import
 
 
 storage = FileStorage()
