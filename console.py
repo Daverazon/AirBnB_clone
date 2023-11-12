@@ -126,7 +126,8 @@ class HBNBCommand(cmd.Cmd):
         args = shlex.split(args)
         # update City 1614f1f1-b89c-475a-ac45-1504c95b7ff3 name "Los Angeles"
         # treat "Los Angeles" as a single string instead of separate words
-        # args = ['City', '1614f1f1-b89c-475a-ac45-1504c95b7ff3', 'name', 'Los Angeles']
+        # args = ['City', '1614f1f1-b89c-475a-ac45-1504c95b7ff3',
+        #  'name', 'Los Angeles']
         if len(args) == 2:  # ["<class_name>", "<id>", ...]
             print("** attribute name missing **")
             return
