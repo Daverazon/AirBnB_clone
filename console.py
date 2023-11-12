@@ -18,6 +18,24 @@ class HBNBCommand(cmd.Cmd):
     """Define a custom command interpreter for Airbnb clone"""
     prompt = "(hbnb) "
 
+    def default(self, line):  # cls.command("argument")
+        cls, comd = line.split(sep='.', maxsplit=1)  # ['cls', 'command("argument")']
+        try:
+            cls = eval(cls)  # check if the class object exists
+        except (NameError, SyntaxError):
+            return cmd.Cmd.default(self, line) # print error
+        cls_list = [BaseModel, User, State, City, Place, Amenity, Review]
+        if cls not in cls_list:
+            return cmd.Cmd.default(self, line) # print error
+        comd, arg = line.split(sep='(', maxsplit=1)  # ['command', '("argument")']
+        cmd_list = ["show", "create", "destroy", "update", "all", "count"]
+        if comd not in cmd_list:
+            return cmd.Cmd.default(self, line) # print error
+        
+        
+        
+            
+
     def checkClass(self, arg):
         """Run error check on class argument and eval it if possible"""
         arg = arg.split()
