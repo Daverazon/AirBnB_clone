@@ -2,10 +2,16 @@
 """This module defines entry point of the command interpreter
 """
 import cmd
+import shlex
 
+from models import storage
 from models.base_model import BaseModel
 from models.user import User
-from models import storage
+from models.state import State
+from models.city import City
+from models.place import Place
+from models.amenity import Amenity
+from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
@@ -31,11 +37,8 @@ class HBNBCommand(cmd.Cmd):
         saves it (to the JSON file) and prints the id"""
         if self.checkClass(arg) is None:
             return
-        obj = self.checkClass(arg)()
-        # create new instance and add it to FileStorage.__objects
-        storage.save()
-        '''serialize the updated FileStorage.__objects
-        dictionary and save to the json file'''
+        obj = self.checkClass(arg)()  # create new instance
+        obj.save()  # save object
         print(obj.id)
 
     def help_create(self):
@@ -69,8 +72,7 @@ class HBNBCommand(cmd.Cmd):
         if self.checkId(cls, args) is None:
             return
         key = self.checkId(cls, args)[1]
-        dict_rep = storage.all()[key]
-        obj = cls(**dict_rep)  # recreate the object
+        obj = storage.all()[key]
         print(obj)
 
     def help_show(self):
@@ -88,8 +90,8 @@ class HBNBCommand(cmd.Cmd):
         if self.checkId(cls, args) is None:
             return
         key = self.checkId(cls, args)[1]
-        objects = storage.all()
-        objects.pop(key)
+        odict = storage.all()
+        odict.pop(key)
         storage.save()
 
     def help_destroy(self):
@@ -107,15 +109,11 @@ class HBNBCommand(cmd.Cmd):
             if self.checkClass(arg) is None:
                 return
             cls = self.checkClass(arg)
-            odict = {key: dict_rep for key, dict_rep in odict.items()
+            odict = {key: obj for key, obj in odict.items()
                      if key.startswith(f'{cls.__name__}')}
         # no specified class so use dict with all stored objects
-        str_rep = []
-        for key, dict_rep in odict.items():
-            cls = key.split(sep='.')[0]  # ['<class_name>', '<id>']
-            obj = eval(cls)(**dict_rep)  # recreate object
-            str_rep.append(str(obj))  # add string rep to list
-            print(str_rep)
+        str_rep = [str(obj) for obj in odict.values()]
+        print(str_rep)
 
     def help_all(self):
         """Help text for all command"""
@@ -125,7 +123,10 @@ class HBNBCommand(cmd.Cmd):
 
     def checkAttr(self, args):
         """Error check attribute name and value"""
-        args = args.split()
+        args = shlex.split(args)
+        # update City 1614f1f1-b89c-475a-ac45-1504c95b7ff3 name "Los Angeles"
+        # treat "Los Angeles" as a single string instead of separate words
+        # args = ['City', '1614f1f1-b89c-475a-ac45-1504c95b7ff3', 'name', 'Los Angeles']
         if len(args) == 2:  # ["<class_name>", "<id>", ...]
             print("** attribute name missing **")
             return
@@ -135,10 +136,6 @@ class HBNBCommand(cmd.Cmd):
             return
         value = args[3]
 
-        if value.startswith('"') and value.endswith('"'):
-            value = value[1:-1]
-        if value.startswith("'") and value.endswith('"'):
-            value = value[1:-1]
         # remove quotes from value but value still a string ooo
         if value.isdigit():
             value = int(value)
@@ -161,9 +158,7 @@ class HBNBCommand(cmd.Cmd):
         if self.checkAttr(args) is None:
             return
         name, value = self.checkAttr(args)
-        dict_rep = storage.all()[key]
-        obj = cls(**dict_rep)  # recreate the object
-        print(name, value)
+        obj = storage.all()[key]
         setattr(obj, name, value)
         obj.save()  # update updated_at and save the object to storage
 
