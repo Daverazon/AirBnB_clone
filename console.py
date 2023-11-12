@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-"""This module defines entry point of the command interpreter
-"""
+"""This module defines entry point of the command interpreter"""
 import cmd
 import shlex
 
