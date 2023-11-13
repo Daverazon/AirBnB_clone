@@ -7,11 +7,9 @@ import models
 
 
 class BaseModel:
-    """This class defines all common attributes/methods for other classes
-    """
+    """This class defines all common attributes/methods for other classes"""
     def __init__(self, *args, **kwargs):
-        """Initialise a BaseModel object
-        """
+        """Initialise a BaseModel object"""
         if kwargs:
             # if we have a non-empty dict_representation of an
             # object, re-create that instance
@@ -41,22 +39,19 @@ class BaseModel:
             * value will be dict_representation of self"""
 
     def __str__(self):
-        """Return informal representation of object
-        """
+        """Return informal representation of object"""
         return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
 
     def save(self):
         """Update the public instance attribute updated_at
-        with the current datetime
-        """
+        with the current datetime"""
         self.updated_at = datetime.now()
         models.storage.save()
         # store the object in the json file
 
     def to_dict(self):
         """return a dictionary containing all keys/values of __dict__
-        of the instance
-        """
+        of the instance"""
         dict_representation = self.__dict__.copy()
         # create dictionary containing all instance attributes
         dict_representation['__class__'] = self.__class__.__name__
