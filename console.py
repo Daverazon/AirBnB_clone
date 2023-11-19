@@ -60,7 +60,7 @@ class HBNBCommand(cmd.Cmd):
         if key not in storage.all().keys():
             print("** no instance found **")
             return
-        return(id, key)
+        return (id, key)
 
     def do_show(self, args):
         """Prints the string representation of an instance based
